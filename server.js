@@ -6,10 +6,10 @@ const authRoutes = require('./routes/authRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const inspectionRoutes = require('./routes/inspectionRoutes');
 
-// Load environment variables
+
 dotenv.config();
 
-// Connect to MongoDB Atlas
+
 connectDB();
 
 const app = express();
