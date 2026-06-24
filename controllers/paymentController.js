@@ -18,6 +18,7 @@ exports.submitPayment = async (req, res) => {
             amount: amount || 15000
         });
 
+
         await newPayment.save();
 
         res.status(201).json({
