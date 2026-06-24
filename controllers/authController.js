@@ -5,10 +5,10 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// New function to fetch all members for the Admin Dashboard
+
 exports.getAllUsers = async (req, res) => {
     try {
-        // Fetch all users and exclude the password field
+
         const users = await User.find().select('-password');
         res.status(200).json(users);
     } catch (error) {
