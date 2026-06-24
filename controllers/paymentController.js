@@ -11,6 +11,7 @@ exports.submitPayment = async (req, res) => {
         }
 
         const newPayment = new Payment({
+
             userId,
             mpesaCode,
             amount: amount || 15000
