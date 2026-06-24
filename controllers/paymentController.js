@@ -5,6 +5,7 @@ exports.submitPayment = async (req, res) => {
     try {
         const { userId, mpesaCode, amount } = req.body;
 
+
         const codeExists = await Payment.findOne({ mpesaCode });
         if (codeExists) {
             return res.status(400).json({ message: 'This M-PESA transaction code has already been submitted.' });
