@@ -75,6 +75,8 @@ exports.loginUser = async (req, res) => {
                 periodicChecksRemaining: user.periodicChecksRemaining
             }
         });
+
+
     } catch (error) {
         res.status(500).json({ message: 'Server login error', error: error.message });
     }
