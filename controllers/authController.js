@@ -34,6 +34,8 @@ exports.registerUser = async (req, res) => {
             role: 'user',
             vehicleDetails: { regNumber, makeModel, yearOfManufacture }
         });
+
+
         await newUser.save();
         res.status(201).json({
             success: true,
