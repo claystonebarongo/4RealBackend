@@ -9,6 +9,7 @@ const generateToken = (id) => {
 
 
 exports.getAllUsers = async (req, res) => {
+
     try {
 
         const users = await User.find().select('-password');
