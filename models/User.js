@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     periodicChecksRemaining: { type: Number, default: 3 }
 }, { timestamps: true });
 
-// FIXED: Removed the 'next' parameter to let Mongoose cleanly track the async Promise lifecycle
+
 UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
