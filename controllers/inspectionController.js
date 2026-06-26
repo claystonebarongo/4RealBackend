@@ -16,7 +16,7 @@ exports.scheduleInspection = async (req, res) => {
             return res.status(403).json({ message: 'Account must be paid and active to schedule appointments.' });
         }
 
-        // Create a new inspection record with a 'scheduled' status
+
         const scheduledInspection = new Inspection({
             userId,
             type,
