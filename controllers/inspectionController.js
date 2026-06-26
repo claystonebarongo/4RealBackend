@@ -70,7 +70,7 @@ exports.logInspection = async (req, res) => {
             status: 'completed',
             findings,
             mechanicNotes,
-            inspectionResponse: 'Service successfully completed.' // Dynamic override for dashboard tracking
+            inspectionResponse: 'Service successfully completed.'
         });
 
         await inspection.save();
@@ -91,11 +91,10 @@ exports.logInspection = async (req, res) => {
     }
 };
 
-// Updated: Fetches history but handles upcoming schedules elegantly
+
 exports.getUserHistory = async (req, res) => {
     try {
         const { userId } = req.params;
-        // Sorts by newest appointments and newest created records first
         const history = await Inspection.find({ userId }).sort({ appointmentDate: -1, createdAt: -1 });
         res.status(200).json({ success: true, history });
     } catch (error) {
