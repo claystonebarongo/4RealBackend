@@ -37,7 +37,7 @@ exports.scheduleInspection = async (req, res) => {
     }
 };
 
-// Existing: Mechanics log an inspection that has just been completed (Deducts balance)
+
 exports.logInspection = async (req, res) => {
     try {
         const { userId, type, findings, mechanicNotes } = req.body;
