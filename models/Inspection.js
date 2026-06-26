@@ -20,7 +20,7 @@ const InspectionSchema = new mongoose.Schema({
     appointmentDate: {
         type: Date
     },
-    // NEW: For the "Inspection Response" dashboard card
+
     inspectionResponse: {
         type: String,
         default: 'Awaiting Inspection Schedule'
