@@ -11,7 +11,7 @@ exports.scheduleInspection = async (req, res) => {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        // Optional: Ensure they are a paid member before scheduling appointments
+
         if (user.membershipStatus !== 'paid') {
             return res.status(403).json({ message: 'Account must be paid and active to schedule appointments.' });
         }
