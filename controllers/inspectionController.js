@@ -1,7 +1,7 @@
 const Inspection = require('../models/Inspection');
 const User = require('../models/User');
 
-// NEW: Admin schedules a future appointment (Maps to "Next Inspection" & "Inspection Response" cards)
+
 exports.scheduleInspection = async (req, res) => {
     try {
         const { userId, type, appointmentDate, inspectionResponse } = req.body;
