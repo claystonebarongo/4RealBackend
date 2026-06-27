@@ -17,6 +17,8 @@ exports.submitPayment = async (req, res) => {
             userId,
             mpesaCode,
             amount: amount || 15000
+
+
         });
 
 
