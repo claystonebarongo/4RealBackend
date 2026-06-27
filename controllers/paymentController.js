@@ -57,6 +57,7 @@ exports.verifyPayment = async (req, res) => {
             message: 'Payment verified successfully. User membership status is now active.',
             payment
         });
+
     } catch (error) {
         res.status(500).json({ message: 'Server payment verification error', error: error.message });
     }
