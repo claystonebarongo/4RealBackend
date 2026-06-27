@@ -53,6 +53,8 @@ exports.verifyPayment = async (req, res) => {
         await User.findByIdAndUpdate(payment.userId, { membershipStatus: 'paid' });
 
         res.status(200).json({
+
+
             success: true,
             message: 'Payment verified successfully. User membership status is now active.',
             payment
