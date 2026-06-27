@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const InspectionSchema = new mongoose.Schema({
     userId: {
-        
+
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -27,6 +27,7 @@ const InspectionSchema = new mongoose.Schema({
         default: 'Awaiting Inspection Schedule'
     },
     findings: {
+
         type: String,
         default: 'Awaiting inspection'
     },
