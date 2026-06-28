@@ -20,7 +20,6 @@ router.patch('/:paymentId/verify', protect, admin, verifyPayment);
 // Admin: Revoke an existing payment by ID
 router.patch('/:paymentId/revoke', protect, admin, revokePayment);
 
-// Add this to your router file
-router.get('/profile', authController.getProfile);
+
 
 module.exports = router;
