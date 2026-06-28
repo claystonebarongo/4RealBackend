@@ -1,42 +1,46 @@
 const Inspection = require('../models/Inspection');
 const User = require('../models/User');
 
-
+// Update an existing request to scheduled status
 exports.scheduleInspection = async (req, res) => {
     try {
-        const { userId, type, appointmentDate, inspectionResponse } = req.body;
+        const { id } = req.params;
+        const { appointmentDate, inspectionResponse } = req.body;
 
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
+        const inspection = await Inspection.findById(id);
+        if (!inspection) {
+            return res.status(404).json({ message: 'Inspection request not found.' });
         }
 
+        inspection.status = 'scheduled';
+        inspection.appointmentDate = appointmentDate;
+        inspection.inspectionResponse = inspectionResponse || 'Your appointment has been scheduled. Please visit our center.';
+        // Optional: track which admin did this if you add 'scheduledBy' to the schema
 
-        if (user.membershipStatus !== 'paid') {
-            return res.status(403).json({ message: 'Account must be paid and active to schedule appointments.' });
-        }
+        await inspection.save();
 
-
-        const scheduledInspection = new Inspection({
-            userId,
-            type,
-            status: 'scheduled',
-            appointmentDate,
-            inspectionResponse: inspectionResponse || 'Your appointment has been scheduled. Please visit our center.'
-        });
-
-        await scheduledInspection.save();
-
-        res.status(201).json({
+        res.status(200).json({
             success: true,
-            message: 'Appointment scheduled successfully.',
-            inspection: scheduledInspection
+            message: 'Appointment successfully scheduled.',
+            inspection
         });
     } catch (error) {
         res.status(500).json({ message: 'Server scheduling error', error: error.message });
     }
 };
 
+// Admin utility to see what needs to be scheduled
+exports.getPendingInspections = async (req, res) => {
+    try {
+        const pending = await Inspection.find({ status: 'pending' })
+            .populate('userId', 'name email') // Populates user data for the admin table
+            .sort({ createdAt: 1 });
+
+        res.status(200).json({ success: true, pending });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching pending inspections', error: error.message });
+    }
+};
 
 exports.logInspection = async (req, res) => {
     try {
@@ -51,6 +55,7 @@ exports.logInspection = async (req, res) => {
             return res.status(403).json({ message: 'Account must be paid and active to log services.' });
         }
 
+        // Handle balance deductions
         if (type === 'standard_inspection') {
             if (user.inspectionsRemaining <= 0) return res.status(400).json({ message: 'No standard inspections remaining.' });
             user.inspectionsRemaining -= 1;
@@ -90,7 +95,6 @@ exports.logInspection = async (req, res) => {
         res.status(500).json({ message: 'Server service logging error', error: error.message });
     }
 };
-
 
 exports.getUserHistory = async (req, res) => {
     try {

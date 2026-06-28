@@ -22,6 +22,18 @@ const PaymentSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'verified', 'rejected'],
         default: 'pending'
+    },
+    // Added for administrative tracking
+    verifiedAt: {
+        type: Date
+    },
+    verifiedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    adminNotes: {
+        type: String,
+        trim: true
     }
 }, { timestamps: true });
 

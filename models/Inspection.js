@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const InspectionSchema = new mongoose.Schema({
     userId: {
-
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -13,26 +12,29 @@ const InspectionSchema = new mongoose.Schema({
         required: true
     },
     status: {
+        // Updated: Added 'pending' for requests that aren't scheduled yet
         type: String,
-        enum: ['scheduled', 'completed', 'cancelled'],
-        default: 'scheduled'
+        enum: ['pending', 'scheduled', 'completed', 'cancelled'],
+        default: 'pending'
     },
-    // NEW: For the "Next Inspection" dashboard card
     appointmentDate: {
         type: Date
     },
-
     inspectionResponse: {
         type: String,
         default: 'Awaiting Inspection Schedule'
     },
     findings: {
-
         type: String,
         default: 'Awaiting inspection'
     },
     mechanicNotes: {
         type: String
+    },
+    // Added: For administrative tracking
+    scheduledBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, { timestamps: true });
 
