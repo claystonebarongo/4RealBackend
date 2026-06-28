@@ -28,7 +28,6 @@ exports.submitPayment = async (req, res) => {
     }
 };
 
-// Admin utility to get payments needing approval
 exports.getPendingPayments = async (req, res) => {
     try {
         const pending = await Payment.find({ status: 'pending' })
@@ -43,8 +42,8 @@ exports.getPendingPayments = async (req, res) => {
 
 exports.verifyPayment = async (req, res) => {
     try {
-        const { paymentId } = req.params; // Changed to params for cleaner REST
-        const { adminId, notes } = req.body; // Added admin tracking
+        const { paymentId } = req.params;
+        const { adminId, notes } = req.body;
 
         const payment = await Payment.findById(paymentId);
         if (!payment) {
@@ -55,7 +54,6 @@ exports.verifyPayment = async (req, res) => {
             return res.status(400).json({ message: 'Payment has already been verified.' });
         }
 
-        // Apply updates based on the new schema
         payment.status = 'verified';
         payment.verifiedAt = new Date();
         payment.verifiedBy = adminId;
@@ -63,7 +61,6 @@ exports.verifyPayment = async (req, res) => {
 
         await payment.save();
 
-        // Update user status
         await User.findByIdAndUpdate(payment.userId, { membershipStatus: 'paid' });
 
         res.status(200).json({
@@ -73,5 +70,35 @@ exports.verifyPayment = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: 'Server payment verification error', error: error.message });
+    }
+};
+
+// New Admin Utility: Revoke a payment
+exports.revokePayment = async (req, res) => {
+    try {
+        const { paymentId } = req.params;
+        const { adminId, notes } = req.body;
+
+        const payment = await Payment.findById(paymentId);
+        if (!payment) {
+            return res.status(404).json({ message: 'Payment record not found.' });
+        }
+
+        // Update payment status to rejected
+        payment.status = 'rejected';
+        payment.adminNotes = notes || 'Payment revoked by administrator.';
+        payment.verifiedBy = adminId;
+        await payment.save();
+
+        // Revert user status to unpaid
+        await User.findByIdAndUpdate(payment.userId, { membershipStatus: 'unpaid' });
+
+        res.status(200).json({
+            success: true,
+            message: 'Payment revoked successfully. User membership status is now inactive.',
+            payment
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server payment revocation error', error: error.message });
     }
 };

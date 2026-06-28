@@ -4,7 +4,8 @@ const {
     logInspection,
     getUserHistory,
     scheduleInspection,
-    getPendingInspections
+    getPendingInspections,
+    cancelInspection // Import the new controller function
 } = require('../controllers/inspectionController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -13,6 +14,9 @@ router.get('/pending', protect, admin, getPendingInspections);
 
 // Admin: Schedule an existing inspection request by ID
 router.patch('/:id/schedule', protect, admin, scheduleInspection);
+
+// Admin: Cancel an existing inspection request by ID
+router.patch('/:id/cancel', protect, admin, cancelInspection);
 
 // Admin: Log a completed service
 router.post('/log', protect, admin, logInspection);

@@ -15,7 +15,6 @@ exports.scheduleInspection = async (req, res) => {
         inspection.status = 'scheduled';
         inspection.appointmentDate = appointmentDate;
         inspection.inspectionResponse = inspectionResponse || 'Your appointment has been scheduled. Please visit our center.';
-        // Optional: track which admin did this if you add 'scheduledBy' to the schema
 
         await inspection.save();
 
@@ -29,11 +28,36 @@ exports.scheduleInspection = async (req, res) => {
     }
 };
 
+// Admin utility to cancel a pending request
+exports.cancelInspection = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const inspection = await Inspection.findById(id);
+        if (!inspection) {
+            return res.status(404).json({ message: 'Inspection request not found.' });
+        }
+
+        inspection.status = 'cancelled';
+        inspection.inspectionResponse = 'Your inspection request has been cancelled by the admin.';
+
+        await inspection.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Inspection request cancelled successfully.',
+            inspection
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server cancellation error', error: error.message });
+    }
+};
+
 // Admin utility to see what needs to be scheduled
 exports.getPendingInspections = async (req, res) => {
     try {
         const pending = await Inspection.find({ status: 'pending' })
-            .populate('userId', 'name email') // Populates user data for the admin table
+            .populate('userId', 'name email')
             .sort({ createdAt: 1 });
 
         res.status(200).json({ success: true, pending });
@@ -55,7 +79,6 @@ exports.logInspection = async (req, res) => {
             return res.status(403).json({ message: 'Account must be paid and active to log services.' });
         }
 
-        // Handle balance deductions
         if (type === 'standard_inspection') {
             if (user.inspectionsRemaining <= 0) return res.status(400).json({ message: 'No standard inspections remaining.' });
             user.inspectionsRemaining -= 1;

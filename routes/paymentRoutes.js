@@ -3,7 +3,8 @@ const router = express.Router();
 const {
     submitPayment,
     verifyPayment,
-    getPendingPayments
+    getPendingPayments,
+    revokePayment // Import the new controller function
 } = require('../controllers/paymentController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -15,5 +16,8 @@ router.get('/pending', protect, admin, getPendingPayments);
 
 // Admin: Verify an existing payment by ID
 router.patch('/:paymentId/verify', protect, admin, verifyPayment);
+
+// Admin: Revoke an existing payment by ID
+router.patch('/:paymentId/revoke', protect, admin, revokePayment);
 
 module.exports = router;
